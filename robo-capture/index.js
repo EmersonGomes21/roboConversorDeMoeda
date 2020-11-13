@@ -1,32 +1,33 @@
-const puppeteer = require('puppeteer');
-const readlineSync = require('readline-sync');
+let puppeteer = require('puppeteer');
+let readlineSync = require('readline-sync');
 
 async function roboCapture(){
-  const browser = await puppeteer.launch( {headless: true}); //substitua "true" por "false" para visualizar 
- const page = await browser.newPage();
- let numBase = readlineSync.question('Quantidade da moeda para converter:') || '1';
-  const moedaBase = readlineSync.question('Informe uma moeda base: ') || 'dolar';
-  const moedaFinal = readlineSync.question('Informe uma moeda desejada: ') ||'real';
+ var browser = await puppeteer.launch( {headless: false}); //substitua "true" por "false" para visualizar 
+ var page = await browser.newPage();
+var textBase = readlineSync.question('Texto a ser convertido:') || 'I love you';
+let idiomaBase = readlineSync.question('Informe o idioma do texto a ser traduzido (exem: Ingles ): ') || 'Ingles';
+  let idiomaFinal = readlineSync.question('Informe o idioma que deseja a tradução (exem: Portugues ): ') ||'Portugues';
+  
 
-
-  const qualquerUrl = `https://www.google.com/search?sxsrf=ALeKk01uzyfjRnYTQCj2PJHe3aRGJ-Cdhw%3A1595858807234&ei=d98eX-j5Dc3Q5OUP7ZK12Ao&q=${numBase}+${moedaBase}+para+${moedaFinal}&oq=${moedaBase}+para+${moedaFinal}&gs_lcp=CgZwc3ktYWIQDFAAWABg9ZI6aABwAHgAgAEAiAEAkgEAmAEAqgEHZ3dzLXdpeg&sclient=psy-ab&ved=0ahUKEwiokcSqze3qAhVNKLkGHW1JDasQ4dUDCAw`; //endereço desejado para efetuar a captura de dados
+ var qualquerUrl = `https://context.reverso.net/traducao/${idiomaBase}-${idiomaFinal}/${textBase}`; //endereço desejado para efetuar a captura de dados
+  
 
   await page.goto(qualquerUrl);
   //await page.screenshot({path: 'example.png'}); //tira print da tela
   //await browser.close(); // fecha o navegador
-    let num = await page.evaluate(() =>{
-    return document.querySelector('.ZEB7Fb.vk_gy.vk_sh.Hg3mWc').value; //valor da classe do input de quantidade da moeda 
-  });
 
+   
+ var resultado = await page.evaluate(() =>{
+  return document.querySelector('a.translation.ltr.dict.no-pos').innerHTML; //resultado da tradução
+  //tw-data-text tw-text-large XcVN5d tw-ta
+   //translation indication ltr dict no-pos
+  });
   
-  const resultado = await page.evaluate(() =>{
-    return document.querySelector('.a61j6.vk_gy.vk_sh.Hg3mWc').value; //valor da conversão da moeda
-  });
-
-
-  console.log(`O valor de ${num} ${moedaBase} em ${moedaFinal} é ${resultado}`); 
+   
+  console.log(`A tradução do texto "${textBase}" para o ${idiomaFinal} é ${resultado}`); 
 
 }
 
 roboCapture();
+
 
